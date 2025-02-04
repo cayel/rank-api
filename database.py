@@ -12,6 +12,7 @@ load_dotenv()
 DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
 SQLALCHEMY_DATABASE_URL = f"postgresql://postgres:{DATABASE_PASSWORD}@db.jsckbqjrbzxabhtplqod.supabase.co:5432/postgres"
 print(SQLALCHEMY_DATABASE_URL)
+
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
