@@ -1,49 +1,20 @@
 # main.py
-from fastapi import FastAPI
-import psycopg2
-from dotenv import load_dotenv
-import os
+from fastapi import FastAPI, Depends
+from database import get_db
+from sqlalchemy.orm import Session
+from sqlalchemy import text
 
 app = FastAPI()
-
-# Load environment variables from .env
-load_dotenv()
-
-# Fetch variables
-USER = os.getenv("USERNAME")
-PASSWORD = os.getenv("PASSWORD")
-HOST = os.getenv("HOST")
-PORT = os.getenv("PORT")
-DBNAME = os.getenv("DBNAME")
-
+    
 @app.get("/health")
-def health_check():
-# Connect to the database
+def health_check(db: Session = Depends(get_db)):
     try:
-        connection = psycopg2.connect(
-            user=USER,
-            password=PASSWORD,
-            host=HOST,
-            port=PORT,
-            dbname=DBNAME
-        )        
-        # Create a cursor to execute SQL queries
-        cursor = connection.cursor()
-        
-        # Example query
-        cursor.execute("SELECT NOW();")
-        result = cursor.fetchone()
-        print("Current Time:", result)
-
-        # Close the cursor and connection
-        cursor.close()
-        connection.close()
+        # Essayez de faire une requête simple pour vérifier la connexion à la base de données
+        db.execute(text("SELECT 1"))
         return {"status": "healthy"}
-
     except Exception as e:
         return {"status": "unhealthy", "details": str(e)}
 
-    
 
 
 
